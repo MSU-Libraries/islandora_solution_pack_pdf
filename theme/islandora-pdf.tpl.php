@@ -1,36 +1,91 @@
 <?php
-
 /**
+
  * @file
  * This is the template file for the pdf object
  *
  * @TODO: Add documentation about this file and the available variables
  */
+global $base_url;
 ?>
+<?php $search_url = $base_url . "/islandora/search/"; ?>
 
-<div class="islandora-pdf-object islandora" vocab="http://schema.org/" prefix="dcterms: http://purl.org/dc/terms/" typeof="Article">
-  <div class="islandora-pdf-content-wrapper clearfix">
-    <?php if (isset($islandora_content)): ?>
-      <div class="islandora-pdf-content">
-        <?php print $islandora_content; ?>
-      </div>
-      <?php if (isset($islandora_download_link)): ?>
-        <?php print $islandora_download_link; ?>
-      <?php endif; ?>
-    <?php endif; ?>
-  </div>
-  <div class="islandora-pdf-metadata">
-    <?php print $description; ?>
-    <?php if($parent_collections): ?>
-      <div>
-        <h2><?php print t('In collections'); ?></h2>
-        <ul>
-          <?php foreach ($parent_collections as $collection): ?>
-            <li><?php print l($collection->label, "islandora/object/{$collection->id}"); ?></li>
-          <?php endforeach; ?>
-        </ul>
-      </div>
-    <?php endif; ?>
-    <?php print $metadata; ?>
-  </div>
+<div class="islandora-pdf-object">
+        <?php if (isset($islandora_content)): ?>
+        <div class="islandora-pdf-content">
+            <?php print $islandora_download_link; ?>
+            <?php print $islandora_content; ?>
+        </div>
+        <?php endif; ?>
+        <?php $display_array = array("Author", "Academic Program", "Level", "Degree", "Advisor", "Committee Members", "Date", "Subject", "Topic", "Keywords", "Access"); ?>
+        <div class="islandora-pdf-metadata">
+            <fieldset>
+               <!-- <h2><legend><span class="fieldset-legend"><?php print ('Dissertation Metadata'); ?></span></legend></h2> --> 
+                <div class="fieldset-wrapper">
+                    <dl class="islandora-inline-metadata islandora-pdf-fields">
+                        <?php $row_field = 0; ?>
+                        <?php foreach ($dc_array as $key => $value): ?>
+                        <?php if (!empty($value['value']) && in_array($value['label'], $display_array)): ?>
+                        <dt class="<?php print $value['class']; ?><?php print $row_field == 0 ? ' first' : ''; ?>">
+                        <!--<dt class="<?php print $value['class']; ?>" -->
+                            <?php print $value['label']; ?>
+                        </dt>
+                        <dd class="<?php print $value['class']; ?><?php print $row_field == 0 ? ' first' : ''; ?>">
+                        <!-- <dd class="<?php print $value['class']; ?>"> -->
+                            <?php foreach ($value['value'] as $entry): ?>
+                                <?php if ($value['label'] === "Level"): ?>
+                                   <a href="<?php print $search_url ?>ndltd.level_ss:(&quot;<?php print strtolower($entry) ?>&quot;)"><?php print $entry ?></a><br>
+                                <?php elseif($value['label'] === "Degree"): ?>
+                                   <a href="<?php print $search_url ?>ndltd.name_ss:(&quot;<?php print $entry ?>&quot;)"><?php print $entry ?></a><br>
+                                
+                                <?php elseif ($value['label'] === "Topic"): ?>
+                                   <a href="<?php print $search_url ?>custom.category_ss:(&quot;<?php print $entry ?>&quot;)"><?php print $entry ?></a><br> 
+                                <?php elseif ($value['label'] === "Academic Program"): ?>
+                                   <a href="<?php print $search_url ?>custom.program_ss:(&quot;<?php print $entry ?>&quot;)"><?php print $entry ?></a><br>
+				<?php elseif ($value['label'] === "Committee Members" || $value['label'] === "Advisor"): ?>
+                                   <a href="<?php print $search_url ?>dc.contributor_ss:(&quot;<?php print $entry ?>&quot;)"><?php print $entry ?></a><br>
+                                <?php elseif ($value['label'] === "Subject"): ?>
+				   <a href="<?php print $search_url ?>full_subject_ss:(&quot;<?php print $entry ?>&quot;)">
+<?php print $entry ?></a><br>
+				<?php elseif ($value['label'] === "Keywords"): ?>
+                                   <a href="<?php print $search_url ?>custom.keyword_ss:(&quot;<?php print $entry ?>&quot;)">
+
+				<?php elseif (in_array($value['label'], $display_array)): ?>
+                                    <?php print $entry; ?> <br>
+                  
+                        </dd>
+                        <?php endif; ?> 
+                        <?php endforeach; ?>
+                        <?php $row_field++; ?>
+                        <?php endif; ?>
+                        <?php endforeach; ?>
+                        <?php if($parent_collections): ?>
+                            <dt class="collections">Member of</dt>
+                            <dd class="collections">
+                                <?php foreach ($parent_collections as $collection): ?>
+                                <?php print l($collection->label, "islandora/object/{$collection->id}"); ?>
+                                <?php endforeach; ?>
+                        <?php endif; ?>                      
+
+
+                    </dl>
+                </div>
+            </fieldset>
+        </div>
+        <?php if ($dc_array["Abstract"]["value"][0] !==""): ?>
+        <div id="abstract">
+	<dl id="abstract">
+	<dt id="abstract">Abstract<dt>
+	<dd id="abstract"><?php print $dc_array["Abstract"]["value"][0] ?></dd>
+        </dl>
+                 
+        </div>
+        <?php endif; ?>
+        <!-- <div class="islandora-pdf-description">
+            <?php if (!empty($dc_array['dc:description']['value'])): ?>
+            <h2><?php print $dc_array['dc:description']['label']; ?></h2>
+            <p><?php print $dc_array['dc:description']['value']; ?></p>
+            <?php endif; ?>
+        </div> -->
+        <!-- <fieldset class="collapsible collapsed islandora-pdf-metadata"> -->
 </div>
