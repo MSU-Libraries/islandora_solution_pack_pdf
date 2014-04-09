@@ -1,4 +1,7 @@
-le
+<?php
+
+/**
+ * @file
  * This file contains all theme and preprocess functions
  */
 
@@ -17,14 +20,16 @@ function islandora_pdf_preprocess_islandora_pdf(&$variables) {
   module_load_include('inc', 'islandora', 'includes/datastream');
   module_load_include('inc', 'islandora', 'includes/utilities');
   module_load_include('inc', 'islandora', 'includes/mods');
+  
+  
   try {
     $mods = $islandora_object['MODS']->content;
-    $ndltd = $islandora_object['NDLTD']->content; //Updated to deliver NDLTD datastrem to MODS class, in order to get Program and Degree Type.
-    $custom = $islandora_object['CUSTOM']->content;
+    $ndltd = $islandora_object['NDLTD']->content; //Updated to deliver NDLTD datastream to MODS class.
+    $custom = $islandora_object['CUSTOM']->content; //Updated to deliver CUSTOM datastream to MODS class.
     $mods_object = MODS::importFromXMLString($mods, $ndltd, $custom);
     
     //drupal_set_message('<pre>'.print_r($mods_object, TRUE).'</pre>');
-    //drupal_set_message('<pre>'.print_r($mods, TRUE).'</pre');
+    //drupal_set_message('<pre>'.print_r($custom, TRUE).'</pre');
 
   } catch (Exception $e) {
     drupal_set_message(t('Error retrieving object %s %t', array('%s' => $islandora_object->id, '%t' => $e->getMessage())), 'error', FALSE);
