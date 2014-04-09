@@ -9,6 +9,16 @@
 
 }
 
+.islandora-pdf-object {
+  margin: 0;
+  border: 0;
+  width: 880px;
+}
+
+#custom_etd_search.ui-widget-content {
+  border:0px;
+}
+
 .islandora-pdf-content {
   background-color: #F2F2F2;
   border: 1px solid #ddd;
@@ -16,6 +26,10 @@
   -moz-border-radius: 5px;
   border-radius: 5px;
   padding: 15px;
+  width: 510px;
+  margin: 0;
+  margin-bottom:10px;
+  float:left; //Added float to allow metadata to move to top of page.
 }
 
 .islandora-pdf-content img {
@@ -24,30 +38,42 @@
 }
 
 .islandora-pdf-metadata {
+  margin: 0;
   display: block;
-  clear: both;
+  float: right;
+  width: 330px; //Adjusted width to fill right column next to PDF image.
 }
 
-/* This is kept for legacy reasons */
 dl.islandora-pdf-fields {
   width:100%;
 }
 
-dl.islandora-metadata-fields {
-    width:100%;
+.islandora-pdf-metadata dt, dt#abstract {
+  font-weight: bold;
+  text-align: left; //changed alignment of text.
+  padding-right: 0;
+  width:15%;
 }
 
-.islandora-pdf-metadata dt {
-  font-weight: normal;
-  text-align: right;
-  font-weight: bold;
-  padding-right: 0;
+/*
+dt.subject, dt.collections {
+  width:100%;  
 }
+
+dd.subject, dd.collections {
+  width:87%;
+}
+*/
 
 .islandora-pdf-metadata dd {
-  padding-left: 40px;
+  text-align:right;
+  width: 67%;
+
 }
 
+dt#abstract {
+  padding-left:11px;
+}
 
 .islandora-pdf-metadata dt,
 .islandora-pdf-metadata dd {
@@ -58,7 +84,7 @@ dl.islandora-metadata-fields {
 .islandora-pdf-metadata dd.first {
   border-top:0;
 }
-
+/*
 body.two-sidebars .islandora-pdf-sidebar {
     clear: both;
     width: 100%;
@@ -68,7 +94,7 @@ body.two-sidebars .islandora-pdf-sidebar {
 
   body.no-sidebars .islandora-pdf-content {
     width: 65%;
-    float: left; /* LTR */
+    float: left;
   }
 
   body.no-sidebars .islandora-pdf-sidebar {
@@ -76,9 +102,9 @@ body.two-sidebars .islandora-pdf-sidebar {
   }
 
   body.no-sidebars .islandora-pdf-sidebar {
-    float: right; /* LTR */
+    float: right;
     width: 35%;
     clear: none;
   }
-
+*/  
 }
