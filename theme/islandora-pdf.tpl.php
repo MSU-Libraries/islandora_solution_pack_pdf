@@ -7,6 +7,23 @@
  * @TODO: Add documentation about this file and the available variables
  */
 global $base_url;
+$limit = 10;
+module_load_include('inc','islandora_solr_search');
+$query="*";
+$search_array = array("Level"=>"ndltd.level_ss",
+                      "Degree"=>"ndltd.name_ss",
+                      "Topic"=>"custom.category_ss",
+                      "Academic Program"=>"custom.program_ss",
+                      "Committee Members"=>"dc.contributor_ss",
+                      "Subject"=>"dc.subject_ss",
+                      "Keywords"=>"custom.keyword_ss"
+                      );
+
+$facets = array_values($search_array);
+$settings = array("facet"=>"true", "facet.limit"=>"-1", "facet.field"=>$facets);
+$solr = new Apache_Solr_Service("localhost",8080,"/solr/");
+$results = $solr->search($query,0,$limit,$settings);
+
 ?>
 <?php $search_url = $base_url . "/islandora/search/"; ?>
 
@@ -17,7 +34,8 @@ global $base_url;
             <?php print $islandora_content; ?>
         </div>
         <?php endif; ?>
-        <?php $display_array = array("Author", "Academic Program", "Level", "Degree", "Advisor", "Committee Members", "Date", "Subject", "Topic", "Keywords", "Access"); ?>
+        <?php $display_array = array("Author", "Academic Program", "Level", "Degree", "Advisor", "Committee Members", "Date", "Subject", "Topic", "Keywords", "Access"); 
+        ?>
         <div class="islandora-pdf-metadata">
             <fieldset>
                <!-- <h2><legend><span class="fieldset-legend"><?php print ('Dissertation Metadata'); ?></span></legend></h2> --> 
@@ -33,23 +51,16 @@ global $base_url;
                         <dd class="<?php print $value['class']; ?><?php print $row_field == 0 ? ' first' : ''; ?>">
                         <!-- <dd class="<?php print $value['class']; ?>"> -->
                             <?php foreach ($value['value'] as $entry): ?>
-                                <?php if ($value['label'] === "Level"): ?>
-                                   <a href="<?php print $search_url ?>ndltd.level_ss:(&quot;<?php print strtolower($entry) ?>&quot;)"><?php print $entry ?></a><br>
-                                <?php elseif($value['label'] === "Degree"): ?>
-                                   <a href="<?php print $search_url ?>ndltd.name_ss:(&quot;<?php print $entry ?>&quot;)"><?php print $entry ?></a><br>
-                                
-                                <?php elseif ($value['label'] === "Topic"): ?>
-                                   <a href="<?php print $search_url ?>custom.category_ss:(&quot;<?php print $entry ?>&quot;)"><?php print $entry ?></a><br> 
-                                <?php elseif ($value['label'] === "Academic Program"): ?>
-                                   <a href="<?php print $search_url ?>custom.program_ss:(&quot;<?php print $entry ?>&quot;)"><?php print $entry ?></a><br>
-				<?php elseif ($value['label'] === "Committee Members" || $value['label'] === "Advisor"): ?>
-                                   <a href="<?php print $search_url ?>dc.contributor_ss:(&quot;<?php print $entry ?>&quot;)"><?php print $entry ?></a><br>
-                                <?php elseif ($value['label'] === "Subject"): ?>
-				   <a href="<?php print $search_url ?>full_subject_ss:(&quot;<?php print $entry ?>&quot;)">
-<?php print $entry ?></a><br>
-				<?php elseif ($value['label'] === "Keywords"): ?>
-                                   <a href="<?php print $search_url ?>custom.keyword_ss:(&quot;<?php print $entry ?>&quot;)">
-
+                                <?php if (array_key_exists($value['label'], $search_array)): ?>
+				    
+					<?php 
+					$facet_object = $results->facet_counts->facet_fields->$search_array[$value['label']];
+					$facet_array = get_object_vars($facet_object);
+					if ($facet_array[$entry] > 1): ?>
+					<a title="<?php print $facet_array[$entry]?> Results" href="<?php print $search_url ?><?php print $search_array[$value['label']]?>:(&quot;<?php print $entry ?>&quot;)"><?php print $entry ?></a><br>
+					<?php elseif ($facet_array[$entry] <= 1): ?>
+					<?php print $entry; ?> <br>
+					<?php endif; ?>
 				<?php elseif (in_array($value['label'], $display_array)): ?>
                                     <?php print $entry; ?> <br>
                   
