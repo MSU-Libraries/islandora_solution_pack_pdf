@@ -14,7 +14,8 @@ $search_array = array("Level"=>"ndltd.level_ss",
                       "Degree"=>"ndltd.name_ss",
                       "Topic"=>"custom.category_ss",
                       "Academic Program"=>"custom.program_ss",
-                      "Committee Members"=>"dc.contributor_ss",
+                      "Advisor"=>"dc.contributor_ss",
+		      "Committee Members"=>"dc.contributor_ss",
                       "Subject"=>"dc.subject_ss",
                       "Keywords"=>"custom.keyword_ss"
                       );
