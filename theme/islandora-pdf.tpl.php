@@ -10,6 +10,25 @@ global $base_url;
 header('Content-Type: text/html; charset=utf-8');
 $limit = 10;
 module_load_include('inc','islandora_solr_search');
+
+// Check for "N" or "O" value for third-party search, and add meta tags if exists
+$tps = $dc_array["third_party_search"]["value"];
+$meta_tags = array(
+    '#tag' => 'META', 
+    '#attributes' => array(
+        'NAME' => 'ROBOTS',
+        'CONTENT' => 'NOINDEX, NOFOLLOW',
+    ),
+);
+        
+
+if ($tps === "N" || $tps === "O") {
+    drupal_add_html_head($meta_tags, "meta_tags");
+}
+
+
+
+
 $query="*";
 $search_array = array("Level"=>"ndltd.level_ss",
                       "Degree"=>"ndltd.name_ss",
@@ -55,8 +74,7 @@ $results = $solr->search($query,0,$limit,$settings);
                         <!-- <dd class="<?php print $value['class']; ?>"> -->
                             <?php foreach ($value['value'] as $entry): ?>
                                 <?php if (array_key_exists($value['label'], $search_array)): ?>
-				    
-					<?php 
+					<?php
 					$facet_object = $results->facet_counts->facet_fields->$search_array[$value['label']];
 					$facet_array = get_object_vars($facet_object);
 					if ($facet_array[$entry] > 1): ?>
@@ -66,9 +84,8 @@ $results = $solr->search($query,0,$limit,$settings);
 					<?php endif; ?>
 				<?php elseif (in_array($value['label'], $display_array)): ?>
                                     <?php print $entry; ?> <br>
-                  
                         </dd>
-                        <?php endif; ?> 
+                        <?php endif; ?>
                         <?php endforeach; ?>
                         <?php $row_field++; ?>
                         <?php endif; ?>
