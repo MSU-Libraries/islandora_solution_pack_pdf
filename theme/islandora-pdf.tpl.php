@@ -42,7 +42,7 @@ $search_array = array("Level"=>"ndltd.level_ss",
 
 $facets = array_values($search_array);
 $settings = array("facet"=>"true", "facet.limit"=>"-1", "facet.field"=>$facets);
-$solr = new Apache_Solr_Service("localhost",8080,"/solr/");
+$solr = new Apache_Solr_Service("localhost",8080,"/solr/fedcom");
 $results = $solr->search($query,0,$limit,$settings);
 // var_dump($results);
 
@@ -77,9 +77,10 @@ $results = $solr->search($query,0,$limit,$settings);
 					<?php
 					$facet_object = $results->facet_counts->facet_fields->$search_array[$value['label']];
 					$facet_array = get_object_vars($facet_object);
-					if ($facet_array[$entry] > 1): ?>
+                                        if ($facet_array[$entry] > 1): ?>
 					<a title="<?php print $facet_array[$entry]?> Results" href="<?php print $search_url ?><?php print $search_array[$value['label']]?>:(&quot;<?php print $entry ?>&quot;)"><?php print $entry ?></a><br>
-					<?php elseif ($facet_array[$entry] <= 1): ?>
+					
+                                        <?php elseif ($facet_array[$entry] <= 1): ?>
 					<?php print $entry; ?> <br>
 					<?php endif; ?>
 				<?php elseif (in_array($value['label'], $display_array)): ?>
