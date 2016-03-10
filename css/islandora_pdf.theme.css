@@ -17,8 +17,10 @@ a.islandora-pdf-link {
   border-radius: 5px;
   padding: 15px;
   float: left;
-  width: 100%;
+  width: 510px;
   max-width: 100%;
+  margin: 0;
+  margin-bottom:10px;
 }
 
 .islandora-pdf-content img {
@@ -27,8 +29,10 @@ a.islandora-pdf-link {
 }
 
 .islandora-pdf-metadata {
+  margin: 0;
   display: block;
-  clear: both;
+  float: right;
+  width: 330px; /* Adjusted width to fill right column next to PDF image. */
 }
 
 /* This is kept for legacy reasons */
@@ -36,21 +40,21 @@ dl.islandora-pdf-fields {
   width:100%;
 }
 
-dl.islandora-metadata-fields {
-    width:100%;
-}
-
-.islandora-pdf-metadata dt {
-  font-weight: normal;
-  text-align: right;
+.islandora-pdf-metadata dt, dt#abstract {
   font-weight: bold;
+  text-align: left; /* changed alignment of text. */
   padding-right: 0;
+  width:15%;
 }
 
 .islandora-pdf-metadata dd {
-  padding-left: 40px;
+  text-align:right;
+  width: 67%;
 }
 
+dt#abstract {
+  padding-left:11px;
+}
 
 .islandora-pdf-metadata dt,
 .islandora-pdf-metadata dd {
@@ -61,7 +65,7 @@ dl.islandora-metadata-fields {
 .islandora-pdf-metadata dd.first {
   border-top:0;
 }
-
+/*
 body.two-sidebars .islandora-pdf-sidebar {
     clear: both;
     width: 100%;
@@ -74,9 +78,9 @@ body.two-sidebars .islandora-pdf-sidebar {
   }
 
   body.no-sidebars .islandora-pdf-sidebar {
-    float: right; /* LTR */
+    float: right;
     width: 35%;
     clear: none;
   }
-
 }
+*/
