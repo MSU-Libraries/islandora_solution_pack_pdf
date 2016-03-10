@@ -11,8 +11,7 @@
  * Default template: islandora-pdf.tpl.php.
  *
  * @param array $variables
- *   An associative array containing:
- *   - islandora_object: An AbstractObject from Islandora.
+ *   an array of variables that will be passed to the theme function
  */
 function islandora_pdf_preprocess_islandora_pdf(&$variables) {
   drupal_add_js('misc/form.js');
@@ -21,21 +20,19 @@ function islandora_pdf_preprocess_islandora_pdf(&$variables) {
   $repository = $islandora_object->repository;
   module_load_include('inc', 'islandora', 'includes/datastream');
   module_load_include('inc', 'islandora', 'includes/utilities');
-  module_load_include('inc', 'islandora', 'includes/metadata');
-
-  // We should eventually remove the DC object and dc_array code as it only
-  // exists to not break legacy implementations.
+  module_load_include('inc', 'islandora', 'includes/mods');
+  
+  
   try {
-    if (isset($islandora_object['DC']) && islandora_datastream_access(ISLANDORA_VIEW_OBJECTS, $islandora_object['DC'])) {
-      $dc = $islandora_object['DC']->content;
-      $dc_object = DublinCore::importFromXMLString($dc);
-    }
-  }
-  catch (Exception $e) {
+    $mods = $islandora_object['MODS']->content;
+    $ndltd = $islandora_object['NDLTD']->content; //Updated to deliver NDLTD datastream to MODS class.
+    $custom = $islandora_object['CUSTOM']->content; //Updated to deliver CUSTOM datastream to MODS class.
+    $mods_object = MODS::importFromXMLString($mods, $ndltd, $custom);
+  } catch (Exception $e) {
     drupal_set_message(t('Error retrieving object %s %t', array('%s' => $islandora_object->id, '%t' => $e->getMessage())), 'error', FALSE);
   }
-  $variables['islandora_dublin_core'] = isset($dc_object) ? $dc_object : NULL;
-  $variables['dc_array'] = isset($dc_object) ? $dc_object->asArray() : array();
+  $variables['islandora_mods'] = isset($mods_object) ? $mods_object : NULL;
+  $variables['dc_array'] = isset($mods_object) ? $mods_object->asArray() : array();
   $variables['islandora_object_label'] = $islandora_object->label;
   $variables['theme_hook_suggestions'][] = 'islandora_pdf__' . str_replace(':', '_', $islandora_object->id);
   $variables['parent_collections'] = islandora_get_parents_from_rels_ext($islandora_object);
@@ -99,8 +96,12 @@ function islandora_pdf_preprocess_islandora_pdf_print(&$variables) {
     $preview_url = url("islandora/object/{$islandora_object->id}/datastream/PREVIEW/view");
     $params = array(
       'title' => $islandora_object->label,
-      'path' => $preview_url,
+      'path' => $preview_url
     );
     $variables['islandora_preview_img'] = theme('image', $params);
+    $variables['islandora_content'] = l($variables['islandora_preview_img'], $variables['islandora_full_url'], array('html' => TRUE));
+    $download_url = 'islandora/object/' . $islandora_object->id . '/datastream/OBJ/download';
+    $download_text = t("Download pdf");
+    $variables['islandora_download_link'] = l($download_text, $download_url, array('attributes' => array('class' => array('islandora-pdf-link'))));
   }
 }
