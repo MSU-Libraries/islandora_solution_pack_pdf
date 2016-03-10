@@ -36,8 +36,8 @@ function islandora_pdf_preprocess_islandora_pdf(&$variables) {
   $variables['islandora_object_label'] = $islandora_object->label;
   $variables['theme_hook_suggestions'][] = 'islandora_pdf__' . str_replace(':', '_', $islandora_object->id);
   $variables['parent_collections'] = islandora_get_parents_from_rels_ext($islandora_object);
-  $variables['metadata'] = islandora_retrieve_metadata_markup($islandora_object);
-  $variables['description'] = islandora_retrieve_description_markup($islandora_object);
+  //$variables['metadata'] = islandora_retrieve_metadata_markup($islandora_object);
+  //$variables['description'] = islandora_retrieve_description_markup($islandora_object);
 
   global $base_url;
 
