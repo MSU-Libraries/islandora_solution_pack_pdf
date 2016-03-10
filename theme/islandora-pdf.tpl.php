@@ -41,7 +41,7 @@ $search_array = array("Level"=>"ndltd.level_ss",
 
 $facets = array_values($search_array);
 $settings = array("facet"=>"true", "facet.limit"=>"-1", "facet.field"=>$facets);
-$solr = new Apache_Solr_Service("localhost",8080,"/solr/");
+$solr = new Apache_Solr_Service("localhost",8080,"/solr/fedcom");
 $results = $solr->search($query,0,$limit,$settings);
 
 ?>
