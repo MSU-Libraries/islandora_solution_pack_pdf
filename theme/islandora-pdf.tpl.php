@@ -75,7 +75,10 @@ $results = $solr->search($query,0,$limit,$settings);
 					<?php
 					$facet_object = $results->facet_counts->facet_fields->$search_array[$value['label']];
 					$facet_array = get_object_vars($facet_object);
-					if ($facet_array[$entry] > 1): ?>
+                    if (!array_key_exists($entry, $facet_array)): 
+                        print $entry;
+                    
+                    elseif ($facet_array[$entry] > 1): ?>
 					<a title="<?php print $facet_array[$entry]?> Results" href="<?php print $search_url ?><?php print $search_array[$value['label']]?>:(&quot;<?php print $entry ?>&quot;)"><?php print $entry ?></a><br>
 					<?php elseif ($facet_array[$entry] <= 1): ?>
 					<?php print $entry; ?> <br>
